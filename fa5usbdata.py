@@ -1,4 +1,4 @@
-__author__ = "Ken26M"
+__author__ = "Ken26M, github.com/Ken26M"
 __copyright__ = "Copyright 2024, The BG7TBL FA-5-6GP Application Project"
 __license__ = "MIT"
 __version__ = "2024.08"

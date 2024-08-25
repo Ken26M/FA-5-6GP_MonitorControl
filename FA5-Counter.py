@@ -14,6 +14,7 @@ __status__ = "Production"
 
 """
 Customized for BG7TBL FA-5 application by Ken26M 2024.08
+github.com/Ken26M/FA-5-6GP_MonitorControl
 """
 
 if __name__ == "__main__":

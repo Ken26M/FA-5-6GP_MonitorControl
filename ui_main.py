@@ -15,7 +15,8 @@ AFCOM - Serial Communication GUI Program
 Cannot be used directly, it is a part of main.py
 """
 """
-Customized for FA-5 application by KenSense 2024.08
+Customized for FA-5 application by Ken26M 2024.08
+github.com/Ken26M/FA-5-6GP_MonitorControl
 """
 
 __author__ = 'Mehmet Cagri Aksoy - github.com/mcagriaksoy'
