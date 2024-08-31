@@ -159,9 +159,6 @@ class Worker(QObject):
         SERIAL_CON.close()
 
 
-def reset_stats():
-    ml.reset_on_next_read()
-
 
 class MainWindow(QMainWindow):
     """ Main Window """
@@ -184,7 +181,8 @@ class MainWindow(QMainWindow):
         self.end_button.clicked.connect(self.stop_loop)
         self.end_button.setEnabled(False)
         self.refresh_button.clicked.connect(self.refresh_port)
-        self.resetstats_button.clicked.connect(reset_stats)
+        self.resetstats_button.clicked.connect(self.reset_stats)
+        self.resethold_button.clicked.connect(self.resethold_stats)
         self.button_command_ch1.clicked.connect(self.channel_change_ch1)
         self.button_command_ch2.clicked.connect(self.channel_change_ch2)
         self.button_command_intosc.clicked.connect(self.channel_change_intosc)
@@ -333,11 +331,24 @@ class MainWindow(QMainWindow):
         command_gate_time = fa5.make_gate_time_command(time_text[0:-5])
         self.send_to_command_buffer(command_gate_time)
 
+    def reset_stats(self):
+        if self.resethold_button.isChecked():
+            ml.reset(False)
+        else:
+            ml.reset_on_next_read()
+
+    def resethold_stats(self):
+        if self.resethold_button.isChecked():
+            ml.reset()
+            self.label_time.setStyleSheet("color: blue;")
+        else:
+            self.label_time.setStyleSheet("")
+
     def establish_serial_communication(self):
         """ Establish serial communication """
         port = self.port_comboBox.currentText()
         baudrate = self.baudrate_comboBox.currentText()
-        timeout = self.timeout_comboBox.currentText()
+        timeout = 2  # self.timeout_comboBox.currentText()
         length = '8'  # self.len_comboBox.currentText()
         # parity = self.parity_comboBox.currentText()
         stopbits = '1'  # self.bit_comboBox.currentText()
@@ -456,7 +467,6 @@ class MainWindow(QMainWindow):
             self.status_label.setStyleSheet('color: red')
         else:
             if is_serial_port_established:
-                self.timeout_comboBox.setEnabled(False)
                 self.baudrate_comboBox.setEnabled(False)
                 self.port_comboBox.setEnabled(False)
                 self.start_button.setEnabled(False)
@@ -557,7 +567,7 @@ class MainWindow(QMainWindow):
 
     def save_to_csv(self):
         """ Save the values to the CSV file"""
-        if ml.save_to_csv():
+        if ml.save_to_csv(self.note_textEdit.toPlainText()):
             self.save_txt_button.setStyleSheet("")
         else:
             self.save_txt_button.setStyleSheet("background-color: red; color: white;")
@@ -566,7 +576,6 @@ class MainWindow(QMainWindow):
         """ Stop the process """
         global is_serial_port_established
         is_serial_port_established = False
-        self.timeout_comboBox.setEnabled(True)
         self.baudrate_comboBox.setEnabled(True)
         self.port_comboBox.setEnabled(True)
         self.end_button.setEnabled(False)
@@ -586,7 +595,7 @@ class MainWindow(QMainWindow):
 
     def copy_stats_to_clipboard(self):
         # format statistics lineµ
-        if ml.copy_stats_to_clipboard():
+        if ml.copy_stats_to_clipboard(self.note_textEdit.toPlainText()):
             self.clipboardcopy_buton.setStyleSheet("")
         else:
             self.clipboardcopy_buton.setStyleSheet("background-color: red; color: white;")

@@ -273,11 +273,12 @@ class MeasureLog:  # 'add_string' is the main function to be used, add the provi
     def get_start_time(self):
         return self.start_time
 
-    def reset(self):
+    def reset(self, reset_time=True):
         self.strings = []
         self.frequencies = []
         self.power = []
-        self.start_time = time.time()
+        if reset_time:
+            self.start_time = time.time()
         self.reset_on_the_next_read = False
 
     def reset_on_next_read(self):
@@ -349,14 +350,15 @@ class MeasureLog:  # 'add_string' is the main function to be used, add the provi
             return self.power
         return []
 
-    def copy_stats_to_clipboard(self):
+    def copy_stats_to_clipboard(self, notes=""):
         # Copy to clipboard and write row to log file.
-        header = 'Start Time,Stop Time,Target Freq,Average Freq (Hz),Difference (mHz),STDev (mHz),Gate Time,' \
-                 'Pk-Pk (mHz), Power (dBm),Minimum,Maximum,Channel,50 Ohm,Count,ppm'
+        header = 'Notes,Start Time,Stop Time,Target Freq,Average Freq (Hz),Difference (mHz),STDev (mHz),Gate Time,' \
+                 'Pk-Pk (mHz), Power (dBm),Minimum,Maximum,Channel,Count,50 Ohm,ppm'
         avg_frequency = round(self.average_value("frequency"), 7)
         target_frequency, difference, ppm = self.get_freq_difference(avg_frequency)
-        stats_text = time.strftime("%Hh%Mm%Ss", time.localtime(self.start_time))  # start
-        stats_text = stats_text + "," + time.strftime("%Hh%Mm%Ss", time.localtime())  # end
+        stats_text = notes.replace("\n", "; ")[:-2]
+        stats_text = stats_text + "," + time.strftime("%d/%m/%y %H:%M:%S", time.localtime(self.start_time))  # start
+        stats_text = stats_text + "," + time.strftime("%d/%m/%y %H:%M:%S", time.localtime())  # end
         stats_text = stats_text + "," + target_frequency.to_eng_string()
         stats_text = stats_text + "," + str(avg_frequency)
         stats_text = stats_text + "," + str(1000 * difference)
@@ -367,8 +369,8 @@ class MeasureLog:  # 'add_string' is the main function to be used, add the provi
         stats_text = stats_text + "," + str(self.min_value("frequency"))
         stats_text = stats_text + "," + str(self.max_value("frequency"))
         stats_text = stats_text + "," + str(self.latest_settings.channel)
-        stats_text = stats_text + "," + str(self.latest_settings.imp50)
         stats_text = stats_text + "," + str(self.count("frequency"))
+        stats_text = stats_text + "," + str(self.latest_settings.imp50)
         stats_text = stats_text + "," + str(ppm)
 
         try:
@@ -384,13 +386,13 @@ class MeasureLog:  # 'add_string' is the main function to be used, add the provi
             print('Write file failed, already open?')
             return False
 
-    def save_to_csv(self):
+    def save_to_csv(self, notes=""):
         """ Save the values to the CSV file"""
         try:
             with open('Measured_Frequencies.csv', 'a', encoding='utf-8') as f:
                 f.writelines([str(round(i[1], 2)) + ',' + str(i[0]) for i in self.frequencies[0:1]])
-                f.writelines(',' + time.strftime("%Y-%m-%d %Hh%Mm%Ss", time.localtime(self.start_time))
-                             + ' N:' + str(self.count('frequency')) + '\n')
+                f.writelines(',' + time.strftime("%d/%m/%y %H:%M:%S", time.localtime(self.start_time))
+                             + ', N:' + str(self.count('frequency')) + "," + notes.replace("\n", ",")[:-1] + '\n')
                 f.writelines([str(round(i[1], 2)) + ',' + str(i[0]) + '\n' for i in self.frequencies[1:]])
                 f.close()
             return True
