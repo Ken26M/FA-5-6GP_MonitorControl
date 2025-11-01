@@ -40,7 +40,7 @@
      </rect>
     </property>
     <property name="tabPosition">
-     <enum>QTabWidget::North</enum>
+     <enum>QTabWidget::TabPosition::North</enum>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -89,7 +89,7 @@
           <bool>false</bool>
          </property>
          <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="acceptDrops">
           <bool>false</bool>
@@ -110,7 +110,7 @@
           </font>
          </property>
          <property name="contextMenuPolicy">
-          <enum>Qt::DefaultContextMenu</enum>
+          <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
          </property>
          <property name="text">
           <string>Count</string>
@@ -238,7 +238,7 @@
           <bool>false</bool>
          </property>
          <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="acceptDrops">
           <bool>false</bool>
@@ -527,7 +527,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Save as .txt</string>
+       <string>Save as .csv</string>
       </property>
      </widget>
      <widget class="QPushButton" name="send_data_button">
@@ -720,7 +720,7 @@
        <rect>
         <x>830</x>
         <y>260</y>
-        <width>94</width>
+        <width>98</width>
         <height>140</height>
        </rect>
       </property>
@@ -864,7 +864,7 @@
        <string>Refresh:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLineEdit" name="send_data_text">
@@ -898,7 +898,7 @@
        <string>Command Buttons</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="Line" name="line">
@@ -911,7 +911,7 @@
        </rect>
       </property>
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Orientation::Vertical</enum>
       </property>
      </widget>
      <widget class="QPlainTextEdit" name="note_textEdit">
@@ -956,281 +956,284 @@
       <property name="markdown">
        <string># FA-5 USB Frequency Meter Serial Communication Protocol 
 
-1. **Factory Default Communication Baud Rate**: 9600 BPS, using ASCII code for
+1\. **Factory Default Communication Baud Rate**: 9600 BPS, using ASCII code for
 communication. 
 
-2. **Communication Protocol** 
+2\. **Communication Protocol** 
 
-**$F*** - Read Frequency Only 
+**$F*** \- Read Frequency Only 
 
 **Example**: Send `$F*` 
 
-**Return**: `$0010000000.001153849,FOK &lt;CR&gt;&lt;LF&gt;` 
+**Return**: `$0010000000.001153849,FOK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `$` - Command prefix. 
-- `0010000000.001153849` - Frequency in Hz (e.g., 10000000.001153849 Hz). 
-- `FOK` - Indicates successful return of the frequency command. 
+- `$` \- Command prefix. 
+- `0010000000.001153849` \- Frequency in Hz (e.g., 10000000.001153849 Hz). 
+- `FOK` \- Indicates successful return of the frequency command. 
 
-**$P*** - Read Power Only 
+**$P*** \- Read Power Only 
 
 **Example**: Send `$P*` 
 
-**Return**: `$-00584,POK &lt;CR&gt;&lt;LF&gt;` 
+**Return**: `$-00584,POK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `$` - Command prefix. 
-- `-00584` - Power in 0.1 dB (e.g., -58.4 dBm). 
-- `POK` - Indicates successful return of the power command. 
+- `$` \- Command prefix. 
+- `\-00584` \- Power in 0.1 dB (e.g., -58.4 dBm). 
+- `POK` \- Indicates successful return of the power command. 
 
-**$D*** - Query Current Channel Frequency and Power 
+**$D*** \- Query Current Channel Frequency and Power 
 
 **Example**: Send `$D*` 
 
-**Return**: `$TPIR ,0010000000.001617652,-00588,DOK &lt;CR&gt;&lt;LF&gt;` 
+**Return**: `$TPIR ,0010000000.001617652,-00588,DOK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `$` - Command prefix. 
-- `T` - Measurement channel (A: CH1, B: CH2, T: Internal 10M reference). 
-- `P` - Precision mode (P: High precision, blank: standard precision). 
-- `I` - Reference selection (I: Internal reference, E: External reference). 
-- `R` - CH1 impedance selection (R: 50Ω, blank: 1MΩ). 
-- `L` - CH1 LPF status (L: LPF on, blank: LPF off). 
-- `0010000000.001617652` - Frequency in Hz (e.g., 10000000.001617652 Hz). 
-- `-00588` - Power in 0.1 dB (e.g., -58.8 dBm). 
-- `DOK` - Indicates successful return of the channel data command. 
+- `$` \- Command prefix. 
+- `T` \- Measurement channel (A: CH1, B: CH2, T: Internal 10M reference). 
+- `P` \- Precision mode (P: High precision, blank: standard precision). 
+- `I` \- Reference selection (I: Internal reference, E: External reference). 
+- `R` \- CH1 impedance selection (R: 50Ω, blank: 1MΩ). 
+- `L` \- CH1 LPF status (L: LPF on, blank: LPF off). 
+- `0010000000.001617652` \- Frequency in Hz (e.g., 10000000.001617652 Hz). 
+- `\-00588` \- Power in 0.1 dB (e.g., -58.8 dBm). 
+- `DOK` \- Indicates successful return of the channel data command. 
 
-**$R*** - Reset Command 
+**$R*** \- Reset Command 
 
 **Example**: Send `$R*` 
 
-**Return**: `RST ROK &lt;CR&gt;&lt;LF&gt;` 
+**Return**: `RST ROK \&lt;CR&gt;&lt;LF&gt;` 
 
-**$G*** - Read Gate Time in ms 
+**$G*** \- Read Gate Time in ms 
 
 **Example**: Send `$G*` 
 
-**Return**: `GATE TIME 0000000100 mS GOK &lt;CR&gt;&lt;LF&gt;` 
+**Return**: `GATE TIME 0000000100 mS GOK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `0000000100` - Gate time in ms (e.g., 100 ms). 
-- `GOK` - Indicates successful return of the gate time command. 
+- `0000000100` \- Gate time in ms (e.g., 100 ms). 
+- `GOK` \- Indicates successful return of the gate time command. 
 
-**$V*** - Read Product Version 
+**$V*** \- Read Product Version 
 
 **Example**: Send `$V*` 
 
 **Return**: 
 
-- `FA-5-USB &lt;CR&gt;&lt;LF&gt;` - Model. 
-- `FREQ COUNTER &lt;CR&gt;&lt;LF&gt;` - Product type. 
-- `1Hz-6.0GHz &lt;CR&gt;&lt;LF&gt;` - Measurement frequency range. 
-- `BG7TBL V20210813 &lt;CR&gt;&lt;LF&gt;` - Author and version. 
-- `VOK &lt;CR&gt;&lt;LF&gt;` - Indicates successful return of the version command. 
+- `FA-5-USB \&lt;CR&gt;&lt;LF&gt;` \- Model. 
+- `FREQ COUNTER \&lt;CR&gt;&lt;LF&gt;` \- Product type. 
+- `1Hz-6.0GHz \&lt;CR&gt;&lt;LF&gt;` \- Measurement frequency range. 
+- `BG7TBL V20210813 \&lt;CR&gt;&lt;LF&gt;` \- Author and version. 
+- `VOK \&lt;CR&gt;&lt;LF&gt;` \- Indicates successful return of the version command. 
 
-**$CXXXX*** - Various Configuration Commands 
+**$CXXXX*** \- Various Configuration Commands 
 
 **Examples**: 
 
-- `$C0000*` - Select internal 10M reference for self-test, power returns as
+- `$C0000*` \- Select internal 10M reference for self-test, power returns as
   noise floor. 
-- `$C0101*` - Select CH1, return CH1 frequency and power. 
-- `$C0202*` - Select CH2, return CH2 frequency and power. 
-- `$C0303*` - CH1 selects 50Ω impedance. 
-- `$C0404*` - CH1 selects 1MΩ impedance. 
-- `$C0505*` - CH1 LPF on. 
-- `$C0606*` - CH1 LPF off. 
-- `$C0707*` - High precision mode on. 
-- `$C0808*` - High precision mode off. 
-- `$C0909*` - Immediately send frequency after measurement. 
-- `$C1010*` - Immediately send frequency and power after measurement. 
-- `$C1111*` - Use `$D*` command to query frequency and power. 
-- `$C2020*` - Set baud rate to 4800 BPS, not saved after power off. 
-- `$C2121*` - Set baud rate to 9600 BPS, not saved after power off. 
-- `$C2222*` - Set baud rate to 19200 BPS, not saved after power off. 
-- `$C2323*` - Set baud rate to 38400 BPS, not saved after power off. 
-- `$C2424*` - Set baud rate to 57600 BPS, not saved after power off. 
-- `$C2525*` - Set baud rate to 115200 BPS, not saved after power off. 
+- `$C0101*` \- Select CH1, return CH1 frequency and power. 
+- `$C0202*` \- Select CH2, return CH2 frequency and power. 
+- `$C0303*` \- CH1 selects 50Ω impedance. 
+- `$C0404*` \- CH1 selects 1MΩ impedance. 
+- `$C0505*` \- CH1 LPF on. 
+- `$C0606*` \- CH1 LPF off. 
+- `$C0707*` \- High precision mode on. 
+- `$C0808*` \- High precision mode off. 
+- `$C0909*` \- Immediately send frequency after measurement. 
+- `$C1010*` \- Immediately send frequency and power after measurement. 
+- `$C1111*` \- Use `$D*` command to query frequency and power. 
+- `$C2020*` \- Set baud rate to 4800 BPS, not saved after power off. 
+- `$C2121*` \- Set baud rate to 9600 BPS, not saved after power off. 
+- `$C2222*` \- Set baud rate to 19200 BPS, not saved after power off. 
+- `$C2323*` \- Set baud rate to 38400 BPS, not saved after power off. 
+- `$C2424*` \- Set baud rate to 57600 BPS, not saved after power off. 
+- `$C2525*` \- Set baud rate to 115200 BPS, not saved after power off. 
 
-**$AXXXXX*** - Set Gate Time in ms (Max 99999 ms, not saved after power off) 
+**$AXXXXX*** \- Set Gate Time in ms (Max 99999 ms, not saved after power off) 
 
 Example: Send `$AXXXXX*`, immediately exit measurement, current measurement data
 invalid. 
 
-**$BXXXXX*** - Set Baud Rate (e.g., 00480, 00960, 01920, 03840, 05760, 11520; not
-saved after power off) 
+**$BXXXXX*** \- Set Baud Rate (e.g., 00480, 00960, 01920, 03840, 05760, 11520;
+not saved after power off) 
 
 Example: Send `$BXXXXX*`, delay 1 second, then change baud rate. 
 
-**$HXXXXX*** - CH2 Frequency Mask (Frequencies above XXXXX MHz are not displayed,
-0 to disable masking) 
+**$HXXXXX*** \- CH2 Frequency Mask (Frequencies above XXXXX MHz are not
+displayed, 0 to disable masking) 
 
 Example: Send `$H13000*`, returns `SET MASK FREQUENCY 0000013000 MHz LOK` 
 
-**$LXXXXX*** - CH2 Frequency Mask (Frequencies below XXXXX MHz are not displayed,
-read as 0) 
+**$LXXXXX*** \- CH2 Frequency Mask (Frequencies below XXXXX MHz are not
+displayed, read as 0) 
 
-**$EXXXX*** - Various EEPROM Configuration Commands 
+**$EXXXX*** \- Various EEPROM Configuration Commands 
 
 **Examples**: 
 
-- `$E2020*` - Select self-test mode on power up. 
-- `$E2121*` - Select CH1 frequency measurement on power up, save to EEPROM. 
-- `$E2222*` - Select CH2 frequency mode on power up, save to EEPROM. 
-- `$E3030*` - Select 50Ω for CH1, save to EEPROM, execute immediately. 
-- `$E3131*` - Select 1MΩ for CH1, save to EEPROM, execute immediately. 
-- `$E3232*` - Beep on, save to EEPROM, execute immediately. 
-- `$E3333*` - Beep off, save to EEPROM, execute immediately. 
-- `$E3434*` - Precision mode on, save to EEPROM. 
-- `$E3535*` - Precision mode off, save to EEPROM. 
-- `$E3636*` - LPF on, save to EEPROM, execute immediately. 
-- `$E3737*` - LPF off, save to EEPROM, execute immediately. 
-- `$E4040*` - Select 50Ω, CH1 input 10M 0dBm for power meter calibration. 
-- `$E4141*` - Select 50Ω, CH1 input 10M -20dBm for power meter calibration. 
-- `$E4242*` - Select 50Ω, CH1 input 10M 5dBm for power meter calibration. 
-- `$E4343*` - CH2 input 0dBm for CH2 power meter calibration. 
-- `$E4444*` - CH2 input -20dBm for CH2 power meter calibration. 
-- `$E4545*` - Save CH1 noise floor to EEPROM. 
-- `$E4646*` - Save CH2 noise floor to EEPROM. 
-- `$E6060*` - Automatically send frequency after measurement. 
-- `$E6161*` - Automatically send frequency and power after measurement. 
-- `$E6262*` - Use command to read frequency and power after measurement. 
+- `$E2020*` \- Select self-test mode on power up. 
+- `$E2121*` \- Select CH1 frequency measurement on power up, save to EEPROM. 
+- `$E2222*` \- Select CH2 frequency mode on power up, save to EEPROM. 
+- `$E3030*` \- Select 50Ω for CH1, save to EEPROM, execute immediately. 
+- `$E3131*` \- Select 1MΩ for CH1, save to EEPROM, execute immediately. 
+- `$E3232*` \- Beep on, save to EEPROM, execute immediately. 
+- `$E3333*` \- Beep off, save to EEPROM, execute immediately. 
+- `$E3434*` \- Precision mode on, save to EEPROM. 
+- `$E3535*` \- Precision mode off, save to EEPROM. 
+- `$E3636*` \- LPF on, save to EEPROM, execute immediately. 
+- `$E3737*` \- LPF off, save to EEPROM, execute immediately. 
+- `$E4040*` \- Select 50Ω, CH1 input 10M 0dBm for power meter calibration. 
+- `$E4141*` \- Select 50Ω, CH1 input 10M -20dBm for power meter calibration. 
+- `$E4242*` \- Select 50Ω, CH1 input 10M 5dBm for power meter calibration. 
+- `$E4343*` \- CH2 input 0dBm for CH2 power meter calibration. 
+- `$E4444*` \- CH2 input -20dBm for CH2 power meter calibration. 
+- `$E4545*` \- Save CH1 noise floor to EEPROM. 
+- `$E4646*` \- Save CH2 noise floor to EEPROM. 
+- `$E6060*` \- Automatically send frequency after measurement. 
+- `$E6161*` \- Automatically send frequency and power after measurement. 
+- `$E6262*` \- Use command to read frequency and power after measurement. 
 
 # FA-5 USB频率计串口通信协议 
 
-1. **出厂通信波特率**: 9600 BPS, 通信均使用 ASCII 码。 
+1\. **出厂通信波特率**: 9600 BPS, 通信均使用 ASCII 码。 
 
-2. **通信协议** 
+2\. **通信协议** 
 
-**$F*** - 只读取频率 
+**$F*** \- 只读取频率 
 
 **例如**: 发送 `$F*` 
 
-**返回**: `$0010000000.001153849,FOK &lt;CR&gt;&lt;LF&gt;` 
+**返回**: `$0010000000.001153849,FOK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `$` - 指令头。 
-- `0010000000.001153849` - 频率，单位 Hz (例如：10000000.001153849 Hz)。 
-- `FOK` - 最后固定为 FOK，表示 F 指令返回成功。 
+- `$` \- 指令头。 
+- `0010000000.001153849` \- 频率，单位 Hz (例如：10000000.001153849 Hz)。 
+- `FOK` \- 最后固定为 FOK，表示 F 指令返回成功。 
 
-**$P*** - 只读取功率 
+**$P*** \- 只读取功率 
 
 **例如**: 发送 `$P*` 
 
-**返回**: `$-00584,POK &lt;CR&gt;&lt;LF&gt;` 
+**返回**: `$-00584,POK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `$` - 指令头。 
-- `-00584` - 返回功率，单位 0.1 DB (例如：-58.4 dBm)。 
-- `POK` - 最后固定为 POK，表示 P 指令返回成功。 
+- `$` \- 指令头。 
+- `\-00584` \- 返回功率，单位 0.1 DB (例如：-58.4 dBm)。 
+- `POK` \- 最后固定为 POK，表示 P 指令返回成功。 
 
-**$D*** - 查询当前通道的频率和功率 
+**$D*** \- 查询当前通道的频率和功率 
 
 **例如**: 发送 `$D*` 
 
-**返回**: `$TPIR ,0010000000.001617652,-00588,DOK &lt;CR&gt;&lt;LF&gt;` 
+**返回**: `$TPIR ,0010000000.001617652,-00588,DOK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `$` - 指令头。 
-- `T` - 测量通道选择 (A: CH1, B: CH2, T: 选择内部 10M 基准)。 
-- `P` - 测试模式选择 (P: 高精度模式, 空格: 等精度模式)。 
-- `I` - 基准选择 (I: 选择内部基准, E: 选择外部基准)。 
-- `R` - CH1 选择 50 欧或 1 兆欧阻抗 (R: CH1 选择 50R, 空格: CH1 选择 1MR)。 
-- `L` - CH1 LPF 是否打开指示 (L: LPF 打开, 空格: LPF 关闭)。 
-- `0010000000.001617652` - 频率，单位 Hz (例如：10000000.001617652 Hz)。 
-- `-00588` - 功率，单位 0.1 DB (例如：-58.8 dBm)。 
-- `DOK` - 最后固定为 DOK，表示 D 指令返回成功。 
+- `$` \- 指令头。 
+- `T` \- 测量通道选择 (A: CH1, B: CH2, T: 选择内部 10M 基准)。 
+- `P` \- 测试模式选择 (P: 高精度模式, 空格: 等精度模式)。 
+- `I` \- 基准选择 (I: 选择内部基准, E: 选择外部基准)。 
+- `R` \- CH1 选择 50 欧或 1 兆欧阻抗 (R: CH1 选择 50R, 空格: CH1 选择 1MR)。 
+- `L` \- CH1 LPF 是否打开指示 (L: LPF 打开, 空格: LPF 关闭)。 
+- `0010000000.001617652` \- 频率，单位 Hz (例如：10000000.001617652 Hz)。 
+- `\-00588` \- 功率，单位 0.1 DB (例如：-58.8 dBm)。 
+- `DOK` \- 最后固定为 DOK，表示 D 指令返回成功。 
 
-**$R*** - 复位指令 
+**$R*** \- 复位指令 
 
 **例如**: 发送 `$R*` 
 
-**返回**: `RST ROK &lt;CR&gt;&lt;LF&gt;` 
+**返回**: `RST ROK \&lt;CR&gt;&lt;LF&gt;` 
 
-**$G*** - 读取闸门时间，单位 ms 
+**$G*** \- 读取闸门时间，单位 ms 
 
 **例如**: 发送 `$G*` 
 
-**返回**: `GATE TIME 0000000100 mS GOK &lt;CR&gt;&lt;LF&gt;` 
+**返回**: `GATE TIME 0000000100 mS GOK \&lt;CR&gt;&lt;LF&gt;` 
 
-- `0000000100` - 闸门时间，单位 ms (例如：100 ms)。 
-- `GOK` - 最后固定为 GOK，表示 G 指令返回成功。 
+- `0000000100` \- 闸门时间，单位 ms (例如：100 ms)。 
+- `GOK` \- 最后固定为 GOK，表示 G 指令返回成功。 
 
-**$V*** - 产品版本读取 
+**$V*** \- 产品版本读取 
 
 **例如**: 发送 `$V*` 
 
 **返回**: 
 
-- `FA-5-USB &lt;CR&gt;&lt;LF&gt;` - 型号。 
-- `FREQ COUNTER &lt;CR&gt;&lt;LF&gt;` - 测量频率范围。 
-- `1Hz-6.0GHz &lt;CR&gt;&lt;LF&gt;` - 作者，版本。 
-- `BG7TBL V20210813 &lt;CR&gt;&lt;LF&gt;` - 表示 V 指令返回成功。 
-- `VOK &lt;CR&gt;&lt;LF&gt;` - 表示 V 指令返回成功。 
+- `FA-5-USB \&lt;CR&gt;&lt;LF&gt;` \- 型号。 
+- `FREQ COUNTER \&lt;CR&gt;&lt;LF&gt;` \- 测量频率范围。 
+- `1Hz-6.0GHz \&lt;CR&gt;&lt;LF&gt;` \- 作者，版本。 
+- `BG7TBL V20210813 \&lt;CR&gt;&lt;LF&gt;` \- 表示 V 指令返回成功。 
+- `VOK \&lt;CR&gt;&lt;LF&gt;` \- 表示 V 指令返回成功。 
 
-**$CXXXX*** - 指令 
+**$CXXXX*** \- 指令 
 
 **例如**: 
 
-- `$C0000*` - 选择内部 10M 基准测量，自检用，功率返回底噪。 
-- `$C0101*` - 选择通道 1，并返回通道 1 的频率和功率。 
-- `$C0202*` - 选择通道 2，并返回通道 2 的频率和功率。 
-- `$C0303*` - CH1 选择 50 欧阻抗。 
-- `$C0404*` - CH1 选择 1M 欧阻抗。 
-- `$C0505*` - CH1 LPF 打开。 
-- `$C0606*` - CH1 LPF 关闭。 
-- `$C0707*` - 高精度模式开。 
-- `$C0808*` - 高精度模式关闭。 
-- `$C0909*` - 测量完毕，立刻发送频率。 
-- `$C1010*` - 测量完毕，立刻发送频率和功率。 
-- `$C1111*` - 需要发送 `$D*` 查询频率和功率。 
-- `$C2020*` - 设置成 4800 BPS 波特率，断电不保存。 
-- `$C2121*` - 设置成 9600 BPS 波特率，断电不保存。 
-- `$C2222*` - 设置成 19200 BPS 波特率，断电不保存。 
-- `$C2323*` - 设置成 38400 BPS 波特率，断电不保存。 
-- `$C2424*` - 设置成 57600 BPS 波特率，断电不保存。 
-- `$C2525*` - 设置成 115200 BPS 波特率，断电不保存。 
+- `$C0000*` \- 选择内部 10M 基准测量，自检用，功率返回底噪。 
+- `$C0101*` \- 选择通道 1，并返回通道 1 的频率和功率。 
+- `$C0202*` \- 选择通道 2，并返回通道 2 的频率和功率。 
+- `$C0303*` \- CH1 选择 50 欧阻抗。 
+- `$C0404*` \- CH1 选择 1M 欧阻抗。 
+- `$C0505*` \- CH1 LPF 打开。 
+- `$C0606*` \- CH1 LPF 关闭。 
+- `$C0707*` \- 高精度模式开。 
+- `$C0808*` \- 高精度模式关闭。 
+- `$C0909*` \- 测量完毕，立刻发送频率。 
+- `$C1010*` \- 测量完毕，立刻发送频率和功率。 
+- `$C1111*` \- 需要发送 `$D*` 查询频率和功率。 
+- `$C2020*` \- 设置成 4800 BPS 波特率，断电不保存。 
+- `$C2121*` \- 设置成 9600 BPS 波特率，断电不保存。 
+- `$C2222*` \- 设置成 19200 BPS 波特率，断电不保存。 
+- `$C2323*` \- 设置成 38400 BPS 波特率，断电不保存。 
+- `$C2424*` \- 设置成 57600 BPS 波特率，断电不保存。 
+- `$C2525*` \- 设置成 115200 BPS 波特率，断电不保存。 
 
-**$AXXXXX*** - 闸门时间设置，单位 ms, 最大 99999 ms, 断电不保存 
+**$AXXXXX*** \- 闸门时间设置，单位 ms, 最大 99999 ms, 断电不保存 
 
 发送该指令后，立刻退出测量，当前测量数据无效 
 
-**$BXXXXX*** - 波特率设置 (例如：00480, 00960, 01920, 03840, 05760, 11520; 断电不保存) 
+**$BXXXXX*** \- 波特率设置 (例如：00480, 00960, 01920, 03840, 05760, 11520; 断电不保存) 
 
 发送后，会延迟 1 秒，再更改 
 
-**$HXXXXX*** - CH2 掩盖频率 (即频率高于 XXXXX MHz 不显示，0 为不掩盖频率) 
+**$HXXXXX*** \- CH2 掩盖频率 (即频率高于 XXXXX MHz 不显示，0 为不掩盖频率) 
 
 **例如**: 发送 `$H13000*` 
 
 **返回**: `SET MASK FREQUENCY 0000013000 MHz LOK` 
 
-**$LXXXXX*** - CH2 频率掩盖 (低于盖频率不显示，读出也是 0) 
+**$LXXXXX*** \- CH2 频率掩盖 (低于盖频率不显示，读出也是 0) 
 
-**$EXXXX*** - 各种 EEPROM 配置指令 
+**$EXXXX*** \- 各种 EEPROM 配置指令 
 
 **例如**: 
 
-- `$E2020*` - 开机选择自检模式。 
-- `$E2121*` - 开机选择 CH1 测频, 记忆入 EEPROM, 并跳到该模式。 
-- `$E2222*` - CH2 频率模式, 记忆入 EEPROM, 并跳到该模式。 
-- `$E3030*` - CH1 选择 50Ω, 记忆入 EEPROM, 并立刻执行。 
-- `$E3131*` - CH1 选择 1MΩ, 记忆入 EEPROM, 并立刻执行。 
-- `$E3232*` - BEEP 打开, 记忆入 EEPROM, 并立刻执行。 
-- `$E3333*` - BEEP 关闭, 记忆入 EEPROM, 并立刻执行。 
-- `$E3434*` - 精度模式打开。 
-- `$E3535*` - 精度模式关闭。 
-- `$E3636*` - LPF 打开, 记忆入 EEPROM, 并立刻执行。 
-- `$E3737*` - LPF 关闭, 记忆入 EEPROM, 并立刻执行。 
-- `$E4040*` - 选择 50R, CH1 输入 10M 0dBm, 校准功率计用。 
-- `$E4141*` - 选择 50R, CH1 输入 10M -20dBm, 校准功率计用。 
-- `$E4242*` - 选择 50R, CH1 输入 10M 5dBm, 校准功率计。 
-- `$E4343*` - CH2 输入 0dBm, 校准 CH2 功率计。 
-- `$E4444*` - CH2 输入 -20dBm, 校准 CH2 功率计。 
-- `$E4545*` - 记忆 CH1 底噪。 
-- `$E4646*` - 记忆 CH2 底噪。 
-- `$E6060*` - 选择测量完毕，自动发送频率。 
-- `$E6161*` - 选择测量完毕，自动发送频率和功率。 
-- `$E6262*` - 选择测量完毕，需要发送指令读取频率和功率。 
+- `$E2020*` \- 开机选择自检模式。 
+- `$E2121*` \- 开机选择 CH1 测频, 记忆入 EEPROM, 并跳到该模式。 
+- `$E2222*` \- CH2 频率模式, 记忆入 EEPROM, 并跳到该模式。 
+- `$E3030*` \- CH1 选择 50Ω, 记忆入 EEPROM, 并立刻执行。 
+- `$E3131*` \- CH1 选择 1MΩ, 记忆入 EEPROM, 并立刻执行。 
+- `$E3232*` \- BEEP 打开, 记忆入 EEPROM, 并立刻执行。 
+- `$E3333*` \- BEEP 关闭, 记忆入 EEPROM, 并立刻执行。 
+- `$E3434*` \- 精度模式打开。 
+- `$E3535*` \- 精度模式关闭。 
+- `$E3636*` \- LPF 打开, 记忆入 EEPROM, 并立刻执行。 
+- `$E3737*` \- LPF 关闭, 记忆入 EEPROM, 并立刻执行。 
+- `$E4040*` \- 选择 50R, CH1 输入 10M 0dBm, 校准功率计用。 
+- `$E4141*` \- 选择 50R, CH1 输入 10M -20dBm, 校准功率计用。 
+- `$E4242*` \- 选择 50R, CH1 输入 10M 5dBm, 校准功率计。 
+- `$E4343*` \- CH2 输入 0dBm, 校准 CH2 功率计。 
+- `$E4444*` \- CH2 输入 -20dBm, 校准 CH2 功率计。 
+- `$E4545*` \- 记忆 CH1 底噪。 
+- `$E4646*` \- 记忆 CH2 底噪。 
+- `$E6060*` \- 选择测量完毕，自动发送频率。 
+- `$E6161*` \- 选择测量完毕，自动发送频率和功率。 
+- `$E6262*` \- 选择测量完毕，需要发送指令读取频率和功率。 
 </string>
       </property>
       <property name="html">
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;title&gt;FA-5 USB Frequency Meter Serial Communication Protocol&lt;/title&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;h1 align=&quot;center&quot; style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-size:xx-large; font-weight:700;&quot;&gt;FA-5 USB Frequency Meter Serial Communication Protocol &lt;/span&gt;&lt;/h1&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;1. &lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Factory Default Communication Baud Rate&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: 9600 BPS, using ASCII code for communication. &lt;/span&gt;&lt;/p&gt;
@@ -1238,19 +1241,22 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$F*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - Read Frequency Only &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Example&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: Send &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$F*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Return&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$0010000000.001153849,FOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - Command prefix. &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - Command prefix. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;0010000000.001153849&lt;/span&gt; - Frequency in Hz (e.g., 10000000.001153849 Hz). &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FOK&lt;/span&gt; - Indicates successful return of the frequency command. &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$P*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - Read Power Only &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Example&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: Send &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$P*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Return&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$-00584,POK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - Command prefix. &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - Command prefix. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;-00584&lt;/span&gt; - Power in 0.1 dB (e.g., -58.4 dBm). &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;POK&lt;/span&gt; - Indicates successful return of the power command. &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$D*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - Query Current Channel Frequency and Power &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Example&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: Send &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$D*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Return&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$TPIR ,0010000000.001617652,-00588,DOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - Command prefix. &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - Command prefix. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;T&lt;/span&gt; - Measurement channel (A: CH1, B: CH2, T: Internal 10M reference). &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;P&lt;/span&gt; - Precision mode (P: High precision, blank: standard precision). &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;I&lt;/span&gt; - Reference selection (I: Internal reference, E: External reference). &lt;/li&gt;
@@ -1265,19 +1271,22 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$G*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - Read Gate Time in ms &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Example&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: Send &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$G*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Return&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;GATE TIME 0000000100 mS GOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;0000000100&lt;/span&gt; - Gate time in ms (e.g., 100 ms). &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;0000000100&lt;/span&gt; - Gate time in ms (e.g., 100 ms). &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;GOK&lt;/span&gt; - Indicates successful return of the gate time command. &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$V*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - Read Product Version &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Example&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: Send &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$V*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Return&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FA-5-USB &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - Model. &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FA-5-USB &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - Model. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FREQ COUNTER &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - Product type. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;1Hz-6.0GHz &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - Measurement frequency range. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;BG7TBL V20210813 &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - Author and version. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;VOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - Indicates successful return of the version command. &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$CXXXX*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - Various Configuration Commands &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Examples&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0000*&lt;/span&gt; - Select internal 10M reference for self-test, power returns as noise floor. &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0000*&lt;/span&gt; - Select internal 10M reference for self-test, power returns as noise floor. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0101*&lt;/span&gt; - Select CH1, return CH1 frequency and power. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0202*&lt;/span&gt; - Select CH2, return CH2 frequency and power. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0303*&lt;/span&gt; - CH1 selects 50Ω impedance. &lt;/li&gt;
@@ -1304,7 +1313,8 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$LXXXXX*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - CH2 Frequency Mask (Frequencies below XXXXX MHz are not displayed, read as 0) &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$EXXXX*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - Various EEPROM Configuration Commands &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;Examples&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2020*&lt;/span&gt; - Select self-test mode on power up. &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2020*&lt;/span&gt; - Select self-test mode on power up. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2121*&lt;/span&gt; - Select CH1 frequency measurement on power up, save to EEPROM. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2222*&lt;/span&gt; - Select CH2 frequency mode on power up, save to EEPROM. &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E3030*&lt;/span&gt; - Select 50Ω for CH1, save to EEPROM, execute immediately. &lt;/li&gt;
@@ -1331,19 +1341,22 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$F*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - 只读取频率 &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;例如&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: 发送 &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$F*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;返回&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$0010000000.001153849,FOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - 指令头。 &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - 指令头。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;0010000000.001153849&lt;/span&gt; - 频率，单位 Hz (例如：10000000.001153849 Hz)。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FOK&lt;/span&gt; - 最后固定为 FOK，表示 F 指令返回成功。 &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$P*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - 只读取功率 &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;例如&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: 发送 &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$P*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;返回&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$-00584,POK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - 指令头。 &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - 指令头。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;-00584&lt;/span&gt; - 返回功率，单位 0.1 DB (例如：-58.4 dBm)。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;POK&lt;/span&gt; - 最后固定为 POK，表示 P 指令返回成功。 &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$D*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - 查询当前通道的频率和功率 &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;例如&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: 发送 &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$D*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;返回&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$TPIR ,0010000000.001617652,-00588,DOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - 指令头。 &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$&lt;/span&gt; - 指令头。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;T&lt;/span&gt; - 测量通道选择 (A: CH1, B: CH2, T: 选择内部 10M 基准)。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;P&lt;/span&gt; - 测试模式选择 (P: 高精度模式, 空格: 等精度模式)。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;I&lt;/span&gt; - 基准选择 (I: 选择内部基准, E: 选择外部基准)。 &lt;/li&gt;
@@ -1358,19 +1371,22 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$G*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - 读取闸门时间，单位 ms &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;例如&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: 发送 &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$G*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;返回&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;GATE TIME 0000000100 mS GOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;0000000100&lt;/span&gt; - 闸门时间，单位 ms (例如：100 ms)。 &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;0000000100&lt;/span&gt; - 闸门时间，单位 ms (例如：100 ms)。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;GOK&lt;/span&gt; - 最后固定为 GOK，表示 G 指令返回成功。 &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$V*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - 产品版本读取 &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;例如&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: 发送 &lt;/span&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$V*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;返回&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FA-5-USB &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - 型号。 &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FA-5-USB &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - 型号。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;FREQ COUNTER &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - 测量频率范围。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;1Hz-6.0GHz &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - 作者，版本。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;BG7TBL V20210813 &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - 表示 V 指令返回成功。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:12px; margin-left:80px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;VOK &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;&lt;/span&gt; - 表示 V 指令返回成功。 &lt;/li&gt;&lt;/ul&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$CXXXX*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - 指令 &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;例如&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0000*&lt;/span&gt; - 选择内部 10M 基准测量，自检用，功率返回底噪。 &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0000*&lt;/span&gt; - 选择内部 10M 基准测量，自检用，功率返回底噪。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0101*&lt;/span&gt; - 选择通道 1，并返回通道 1 的频率和功率。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0202*&lt;/span&gt; - 选择通道 2，并返回通道 2 的频率和功率。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$C0303*&lt;/span&gt; - CH1 选择 50 欧阻抗。 &lt;/li&gt;
@@ -1398,7 +1414,8 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$LXXXXX*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - CH2 频率掩盖 (低于盖频率不显示，读出也是 0) &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:20px; margin-bottom:12px; margin-left:20px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;$EXXXX*&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt; - 各种 EEPROM 配置指令 &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial','sans-serif'; font-weight:700;&quot;&gt;例如&lt;/span&gt;&lt;span style=&quot; font-family:'Arial','sans-serif';&quot;&gt;: &lt;/span&gt;&lt;/p&gt;
-&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2020*&lt;/span&gt; - 开机选择自检模式。 &lt;/li&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
+&lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2020*&lt;/span&gt; - 开机选择自检模式。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2121*&lt;/span&gt; - 开机选择 CH1 测频, 记忆入 EEPROM, 并跳到该模式。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E2222*&lt;/span&gt; - CH2 频率模式, 记忆入 EEPROM, 并跳到该模式。 &lt;/li&gt;
 &lt;li style=&quot; font-family:'Arial','sans-serif';&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:40px; margin-right:20px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Courier New';&quot;&gt;$E3030*&lt;/span&gt; - CH1 选择 50Ω, 记忆入 EEPROM, 并立刻执行。 &lt;/li&gt;
@@ -1456,6 +1473,9 @@ debugging, or communicating with other devices that use the serial protocol.
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The AFCOM (aka Serial communication GUI program) tool is a software application that allows users to send and receive data via the serial port (COM port) of their computer. The tool can be used for various purposes, such as testing, debugging, or communicating with other devices that use the serial protocol. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
@@ -1505,12 +1525,10 @@ p, li { white-space: pre-wrap; }
        <bool>true</bool>
       </property>
       <property name="markdown">
-       <string>This FA-5-USB GUI application is a very custom version of a genenral serial
-communication tool. You can also log long time frequency measurments but in
-that case it is probably a better idea to use Timelab.
-
-
-[https://github.com/Ken26M/FA-5-6GP_MonitorControl](https://github.com/Ken26M/FA-5-6GP_MonitorControl)
+       <string>This FA-5-USB GUI application v1.0 is a very custom version of a genenral
+serial communication tool. You can also log long time frequency measurments but
+in that case it is probably a better idea to use Timelab.  
+&lt;https://github.com/Ken26M/FA-5-6GP_MonitorControl&gt;
 
 </string>
       </property>
@@ -1518,9 +1536,11 @@ that case it is probably a better idea to use Timelab.
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This FA-5-USB GUI application is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.&lt;/p&gt;
-&lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;https://github.com/Ken26M/FA-5-6GP_MonitorControl&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/Ken26M/FA-5-6GP_MonitorControl&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This FA-5-USB GUI application v1.0 is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.  &lt;a href=&quot;https://github.com/Ken26M/FA-5-6GP_MonitorControl&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#005ba0;&quot;&gt;https://github.com/Ken26M/FA-5-6GP_MonitorControl&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="acceptRichText">
        <bool>false</bool>

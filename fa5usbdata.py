@@ -1,7 +1,7 @@
 __author__ = "Ken26M, github.com/Ken26M"
 __copyright__ = "Copyright 2024, The BG7TBL FA-5-6GP Application Project"
 __license__ = "MIT"
-__version__ = "2024.08"
+__version__ = "2025.11"
 __status__ = "Work in Progress"
 
 import time
@@ -15,7 +15,7 @@ import os
 
 
 # keep commands easy to get and change if needed
-def make_gate_time_command(gatetime):  # gatetime is string in ms
+def make_gate_time_command(gatetime):  # gatetime is string in sec
     gatetimestr = str(int(float(gatetime) * 1000)).zfill(5)
     commandstr = "$A" + gatetimestr + "*"
     return commandstr
@@ -119,6 +119,7 @@ def group_spaces(decimal_number: Decimal) -> str:
         # Split the number into integer and fractional parts
         integer_part, fractional_part = decimal_str.split('.')
 
+
         # Function to group the digits into chunks of three from the left
         def chunk_string(s, size):
             return re.findall(f'.{{1,{size}}}', s)
@@ -145,6 +146,82 @@ def channel_to_text(channel_char):
         return 'Channel: Internal Clock'
 
 
+
+def extract_all_big_float_pairs(s: str, min_integer_digits: int = 7):
+    """Find all occurrences of a big decimal number (integer part at least min_integer_digits)
+    optionally followed by a comma and a second number. Return a list of dicts with metadata.
+
+    Each dict contains:
+      - text1, decimal1, start1, end1, int_digits
+      - text2, decimal2, start2, end2  (may be None if no second value was found)
+
+    The function first looks for explicit "number,number" pairs and returns those
+    that match the integer-digit threshold. If none are found it will fall back
+    to returning the first standalone big decimal it finds.
+    """
+    results = []
+    if not s:
+        return results
+
+    # First try to find explicit pairs like: 0010000000.001100001,-00554
+    pair_pattern = re.compile(r"(\d+\.\d+)\s*,\s*([+-]?\d+)\b")
+    for m in pair_pattern.finditer(s):
+        t1 = m.group(1)
+        t2 = m.group(2)
+        int_part = t1.split('.', 1)[0]
+        int_digits = len(int_part)
+        if int_digits >= int(min_integer_digits):
+            try:
+                d1 = Decimal(t1)
+            except Exception:
+                continue
+            try:
+                d2 = Decimal(t2)
+            except Exception:
+                d2 = None
+            results.append({
+                'text1': t1,
+                'decimal1': d1,
+                'start1': m.start(1),
+                'end1': m.end(1),
+                'int_digits': int_digits,
+                'text2': t2,
+                'decimal2': d2,
+                'start2': m.start(2),
+                'end2': m.end(2),
+            })
+
+    if results:
+        return results
+
+    # Fallback: find standalone big decimals (with fractional part)
+    single_pattern = re.compile(r"(\d+\.\d+)")
+    for m in single_pattern.finditer(s):
+        t1 = m.group(1)
+        int_part = t1.split('.', 1)[0]
+        int_digits = len(int_part)
+        if int_digits >= int(min_integer_digits):
+            try:
+                d1 = Decimal(t1)
+            except Exception:
+                continue
+            results.append({
+                'text1': t1,
+                'decimal1': d1,
+                'start1': m.start(1),
+                'end1': m.end(1),
+                'int_digits': int_digits,
+                'text2': None,
+                'decimal2': None,
+                'start2': None,
+                'end2': None,
+            })
+            # stop after first standalone match (behavior: single result)
+            break
+
+    return results
+
+
 def preprocess_string(string):
     # Example preprocessing logic to determine category
     # Remove leading and trailing whitespace
@@ -156,7 +233,7 @@ def preprocess_string(string):
     # $E6161* (get freq and power)
     # $A0010000000.001000001,+00129,
     measurements = []
-
+    is_data_stream = False
     if 'OK' in preprocessed_string:  # check if it was a return of command
         if 'POK' in preprocessed_string:
             category = Category.POWER
@@ -184,18 +261,20 @@ def preprocess_string(string):
         else:
             category = Category.UNKNOWN  # This will not be added to frequencies or power
     else:
-        if '$' in preprocessed_string:  # continuous data stream
-            str_list = preprocessed_string.split(',')
-            category = Category.FREQUENCY
-            preprocessed_cut_number = str_list[0][2:-3]  # get number but cut of Double error
-            measurements.append((category, preprocessed_cut_number))
-            if len(str_list) == 3:  # check if power is also present
-                category = Category.POWER
-                preprocessed_cut_number = str_list[1]
-                measurements.append((category, preprocessed_cut_number))
+        numbers_found = extract_all_big_float_pairs(preprocessed_string, min_integer_digits=7)
+        if numbers_found:
+            is_data_stream = True
+            # Each match may represent a separate measurement; append frequency and optional power
+            for match in numbers_found:
+                # append frequency (text1)
+                if match and match.get('text1'):
+                    measurements.append((Category.FREQUENCY, match.get('decimal1')))
+                # append power if present (text2)
+                if match and match.get('text2'):
+                    measurements.append((Category.POWER, match.get('decimal2')))
         else:
             category = Category.UNKNOWN  # This will not be added to frequencies or power
-    return measurements, new_settings
+    return measurements, new_settings, is_data_stream
 
 
 class MeasureLog:  # 'add_string' is the main function to be used, add the provided string from the FA-5
@@ -214,7 +293,7 @@ class MeasureLog:  # 'add_string' is the main function to be used, add the provi
         timestamp = time.time() - self.start_time
 
         # Analyse string content
-        measurements, new_settings = preprocess_string(single_line_string)
+        measurements, new_settings, is_data_stream  = preprocess_string(single_line_string)
 
         # Add to string list
         self.strings.append((single_line_string, timestamp))
@@ -224,20 +303,12 @@ class MeasureLog:  # 'add_string' is the main function to be used, add the provi
 
         for measurement in measurements:
             category = measurement[0]
-            preprocessed_string = measurement[1]
             # Add to the appropriate list based on the category
-            try:
-                number = Decimal(preprocessed_string)  # decimal to avoid adding rounding errors
-                # make sure to use a string to define the decimal number (a float will add an error into the Decimal)
-                # .getcontext: Context(prec=28, rounding=ROUND_HALF_EVEN, Emin=-999999, Emax=999999, capitals=1,
-                # clamp=0, flags=[], traps=[InvalidOperation, DivisionByZero, Overflow])
-                if category == Category.FREQUENCY:
-                    self.frequencies.append((number, timestamp))
-                elif category == Category.POWER:
-                    self.power.append((number / 10, timestamp))
-            except InvalidOperation:
-                print('not a number, need to look into why')
-                pass  # Do nothing if the string is not a valid Decimal
+            if category == Category.FREQUENCY:
+                self.frequencies.append((measurement[1], timestamp))
+            elif category == Category.POWER:
+                self.power.append((measurement[1] / 10, timestamp))
+        return is_data_stream
 
     def get_freq_difference(self, freq=0, target_freq=0):
         freq = Decimal(freq)
