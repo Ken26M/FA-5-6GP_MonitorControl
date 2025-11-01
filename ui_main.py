@@ -233,10 +233,9 @@ class MainWindow(QMainWindow):
 
         self.freq_series = QLineSeries()
         pen = self.freq_series.pen()
-        pen.setWidthF(0.5)  # or pen.widthF() / 2.0
+        pen.setWidthF(0.5) # thinner line for better visibility
         self.freq_series.setPen(pen)
-        # self.freq_series = QLineSeries()
-        # self.freq_series.setName("Frequency")
+        self.freq_series.setName("Frequency")
 
         self.chart = QChart()
         self.chart.addSeries(self.freq_series)
@@ -335,6 +334,9 @@ class MainWindow(QMainWindow):
                             pass
                     # create a fresh series and attach axes
                     self.freq_series = QLineSeries()
+                    pen = self.freq_series.pen()
+                    pen.setWidthF(0.5)  # thinner line for better visibility
+                    self.freq_series.setPen(pen)
                     self.freq_series.setName("Frequency")
                     self.chart.addSeries(self.freq_series)
                     try:
