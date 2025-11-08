@@ -25,9 +25,17 @@ import sys
 from subprocess import call
 from decimal import Decimal
 import json
+from enum import Enum
+
+
+class Device_Type(Enum):
+    FA_5 = "FA-5"
+    FA_3 = "FA-3"
+    FA_2 = "FA-2"
+
 
 # Use %APPDATA% on Windows (fall back to user's home if APPDATA not set)
-_APPDATA = os.getenv('APPDATA') or os.path.join(os.path.expanduser("~"), 'AppData', 'Roaming')
+_APPDATA = os.getenv('LOCALAPPDATA') or os.path.join(os.path.expanduser("~"), 'AppData', 'Local')
 _SETTINGS_DIR = os.path.join(_APPDATA, 'FA5_MonitorControl')
 _SETTINGS_FILENAME = 'settings.json'
 SETTINGS_FILE = os.path.join(_SETTINGS_DIR, _SETTINGS_FILENAME)
@@ -38,7 +46,9 @@ DEFAULT_SETTINGS = {
     "saved_command_2": "",
     "saved_command_3": "",
     "saved_command_4": Commands.SET_GATE_TIME_100MS.value,
+    "device_type": Device_Type.FA_5.value,
 }
+
 
 def load_user_settings():
     """Load persisted settings from disk, return dict with defaults."""
@@ -49,8 +59,14 @@ def load_user_settings():
                 data = json.load(f)
                 if isinstance(data, dict):
                     defaults.update(data)
+        else:
+            # Create directory if needed
+            os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
+            # Save defaults to file
+            with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+                json.dump(defaults, f, indent=4)
     except Exception:
-        logging.exception("Failed to read settings file, using defaults")
+        logging.exception("Failed to read or create settings file, using defaults")
     return defaults
 
 
@@ -109,11 +125,12 @@ except ImportError as e:
     logging.critical(f"ImportError details: {e}")
     sys.exit(1)
 
-CHARTS_AVAILABLE =True
+CHARTS_AVAILABLE = True
 try:
     from PyQt6.QtCharts import QChart, QChartView, QValueAxis, QLineSeries
 except ImportError as e:
-    logging.critical("Failed to import essential PyQt6-Charts modules. Please install PyQt6-Charts before running this application.")
+    logging.critical(
+        "Failed to import essential PyQt6-Charts modules. Please install PyQt6-Charts before running this application.")
     logging.critical("You can usually install it with: python -m pip install PyQt6-Charts")
     logging.critical(f"ImportError details: {e}")
     CHARTS_AVAILABLE = False
@@ -137,7 +154,6 @@ def get_serial_port():
         :returns:
             A list of the serial ports available on the system
     """
-
 
     ports = serial.tools.list_ports.comports()
 
@@ -211,7 +227,6 @@ class Worker(QObject):
         SERIAL_CON.close()
 
 
-
 class MainWindow(QMainWindow):
     """ Main Window """
 
@@ -233,7 +248,7 @@ class MainWindow(QMainWindow):
 
         self.freq_series = QLineSeries()
         pen = self.freq_series.pen()
-        pen.setWidthF(0.5) # thinner line for better visibility
+        pen.setWidthF(0.5)  # thinner line for better visibility
         self.freq_series.setPen(pen)
         self.freq_series.setName("Frequency")
 
@@ -310,11 +325,6 @@ class MainWindow(QMainWindow):
                         self.data_textEdit.clear()
                     except Exception:
                         pass
-                if hasattr(self, 'data_textEdit_all') and self.data_textEdit_all is not None:
-                    try:
-                        self.data_textEdit_all.clear()
-                    except Exception:
-                        pass
             except Exception:
                 pass
             try:
@@ -363,11 +373,6 @@ class MainWindow(QMainWindow):
                     self.data_textEdit.clear()
                 except Exception:
                     pass
-            if hasattr(self, 'data_textEdit_all') and self.data_textEdit_all is not None:
-                try:
-                    self.data_textEdit_all.clear()
-                except Exception:
-                    pass
 
             # Reset axes ranges to a small default
             if hasattr(self, 'axis_x') and self.axis_x is not None:
@@ -406,6 +411,9 @@ class MainWindow(QMainWindow):
         # Ensure settings dict exists early so other methods can safely update it
         try:
             self._user_settings = load_user_settings()
+            # Get the current device type from settings
+            device_str = self._user_settings.get("device_type", Device_Type.FA_5.value)
+            self.device_type = Device_Type(device_str)
         except Exception:
             # fallback to DEFAULT_SETTINGS (single source of truth) if loading fails
             self._user_settings = DEFAULT_SETTINGS.copy()
@@ -486,17 +494,23 @@ class MainWindow(QMainWindow):
         try:
             # apply loaded values (fall back to sensible defaults)
             if hasattr(self, 'saved_command_1'):
-                self.saved_command_1.setText(self._user_settings.get("saved_command_1", Commands.GET_GATE_TIME_SETTING.value))
+                self.saved_command_1.setText(
+                    self._user_settings.get("saved_command_1", Commands.GET_GATE_TIME_SETTING.value))
             if hasattr(self, 'saved_command_2'):
                 self.saved_command_2.setText(self._user_settings.get("saved_command_2", "Command 2"))
             if hasattr(self, 'saved_command_3'):
                 self.saved_command_3.setText(self._user_settings.get("saved_command_3", "Command 3"))
             if hasattr(self, 'saved_command_4'):
-                self.saved_command_4.setText(self._user_settings.get("saved_command_4", Commands.SET_GATE_TIME_100MS.value))
+                self.saved_command_4.setText(
+                    self._user_settings.get("saved_command_4", Commands.SET_GATE_TIME_100MS.value))
+            if hasattr(self, 'label_com_settings'): # make mode/device type visible in GUI
+                device_type = self._user_settings.get("device_type", Device_Type.FA_5.value)
+                self.label_com_settings.setText("Settings " + device_type + ":")
+
+
         except Exception:
             logging.exception("Failed to apply user saved command settings")
         self.setup_frequency_plot()
-
 
     def update_frequency_plot(self, timestamp, frequency):
         """Update the frequency plot with new data"""
@@ -636,6 +650,7 @@ class MainWindow(QMainWindow):
 
     def get_settings_from_device(self):
         self.send_to_command_buffer(Commands.GET_FREQ_POWER_SETTINGS)
+        self.send_to_command_buffer(Commands.GET_GATE_TIME_SETTING)
 
     def toggle_precision_mode(self):
         if ml.latest_settings.precision:
@@ -852,8 +867,9 @@ class MainWindow(QMainWindow):
                 self.status_label.setText("CONNECTED!")
                 self.status_label.setStyleSheet('color: green')
                 if self.get_FA_settings:
-                    self.send_to_command_buffer(Commands.GET_FREQ_POWER_SETTINGS)
-                    self.send_to_command_buffer(Commands.GET_GATE_TIME_SETTING)
+                    if self.device_type == Device_Type.FA_5:
+                        self.send_to_command_buffer(Commands.GET_FREQ_POWER_SETTINGS)
+                        self.send_to_command_buffer(Commands.GET_GATE_TIME_SETTING)
                     self.get_FA_settings = False
                 if (meta and meta.get("datastream")) or serial_data[-4:-2] == 'OK':
                     self.send_command()  # execute next after receiving OK or 1 line measurement data
@@ -985,6 +1001,5 @@ def start_ui_design():
     """ Start the UI Design """
     app = QApplication(argv)  # Create an instance
     window_object = MainWindow()  # Create an instance of our class
-
 
     app.exec()  # Start the application

@@ -649,7 +649,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QLabel" name="label_46">
+     <widget class="QLabel" name="label_com_settings">
       <property name="geometry">
        <rect>
         <x>730</x>
@@ -1525,9 +1525,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
        <bool>true</bool>
       </property>
       <property name="markdown">
-       <string>This FA-5-USB GUI application v1.0 is a very custom version of a genenral
+       <string>This FA-5-USB GUI application v1.01 is a very custom version of a genenral
 serial communication tool. You can also log long time frequency measurments but
-in that case it is probably a better idea to use Timelab.  
+in that case it is probably a better idea to use Timelab.   
 &lt;https://github.com/Ken26M/FA-5-6GP_MonitorControl&gt;
 
 </string>
@@ -1540,7 +1540,7 @@ hr { height: 1px; border-width: 0; }
 li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This FA-5-USB GUI application v1.0 is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.  &lt;a href=&quot;https://github.com/Ken26M/FA-5-6GP_MonitorControl&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#005ba0;&quot;&gt;https://github.com/Ken26M/FA-5-6GP_MonitorControl&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This FA-5-USB GUI application v1.01 is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.   &lt;a href=&quot;https://github.com/Ken26M/FA-5-6GP_MonitorControl&quot;&gt;&lt;span style=&quot; color:#005ba0;&quot;&gt;https://github.com/Ken26M/FA-5-6GP_MonitorControl&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="acceptRichText">
        <bool>false</bool>
