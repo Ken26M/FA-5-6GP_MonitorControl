@@ -294,7 +294,7 @@ class Ui_main_window(object):
         self.baudrate_comboBox.addItem("")
         self.formLayout_4.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.baudrate_comboBox)
         self.label_com_settings = QtWidgets.QLabel(parent=self.tab)
-        self.label_com_settings.setGeometry(QtCore.QRect(730, 0, 71, 21))
+        self.label_com_settings.setGeometry(QtCore.QRect(730, 0, 101, 21))
         self.label_com_settings.setObjectName("label_com_settings")
         self.refresh_button = QtWidgets.QPushButton(parent=self.tab)
         self.refresh_button.setGeometry(QtCore.QRect(890, 0, 31, 28))
@@ -362,7 +362,7 @@ class Ui_main_window(object):
         self.comboBox_gatetime.addItem("")
         self.formLayout_5.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.comboBox_gatetime)
         self.label_47 = QtWidgets.QLabel(parent=self.tab)
-        self.label_47.setGeometry(QtCore.QRect(820, 0, 61, 21))
+        self.label_47.setGeometry(QtCore.QRect(830, 0, 51, 21))
         self.label_47.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.label_47.setObjectName("label_47")
         self.send_data_text = QtWidgets.QLineEdit(parent=self.tab)
@@ -1011,7 +1011,7 @@ class Ui_main_window(object):
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:\'Segoe UI\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This FA-5-USB GUI application v1.01 is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.   <a href=\"https://github.com/Ken26M/FA-5-6GP_MonitorControl\"><span style=\" color:#005ba0;\">https://github.com/Ken26M/FA-5-6GP_MonitorControl</span></a></p></body></html>"))
+"<p style=\" margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This FA-5-USB GUI application v1.01 is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.   <a href=\"https://github.com/Ken26M/FA-5-6GP_MonitorControl\"><span style=\" text-decoration: underline; color:#005ba0;\">https://github.com/Ken26M/FA-5-6GP_MonitorControl</span></a></p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("main_window", "About"))
         self.actionAna_Ekran.setText(_translate("main_window", "Ana Ekran"))
         self.actionHelp.setText(_translate("main_window", "Help"))

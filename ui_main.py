@@ -26,12 +26,14 @@ from subprocess import call
 from decimal import Decimal
 import json
 from enum import Enum
+from PyQt6.QtCore import QObject, QThread, pyqtSignal, Qt, QMargins, QEvent
 
 
 class Device_Type(Enum):
-    FA_5 = "FA-5"
-    FA_3 = "FA-3"
     FA_2 = "FA-2"
+    FA_3 = "FA-3"
+    FA_5 = "FA-5"
+    TinyGTC = "TinyGTC"
 
 
 # Use %APPDATA% on Windows (fall back to user's home if APPDATA not set)
@@ -109,7 +111,7 @@ except ImportError:
 
 # Attempt to import PyQt6 core and widgets (required)
 try:
-    from PyQt6.QtCore import QObject, QThread, pyqtSignal, Qt, QMargins
+    from PyQt6.QtCore import QObject, QThread, pyqtSignal, Qt, QMargins, QEvent
     from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog, QSizePolicy
     from PyQt6 import uic
     from PyQt6.QtGui import QPainter
@@ -167,8 +169,8 @@ def get_serial_port():
         try:
             s = Serial(port.device)
             s.close()
-            if port.vid == 1027 and port.pid == 24577:  # Filter out other com devices
-                result.append(port.device)
+            if (port.vid == 1027 and port.pid == 24577) or (port.vid == 1155 and port.pid == 22337):  # Filter out other com devices
+                result.insert(0,port.device)
         except SerialException:
             pass
     return result
@@ -200,13 +202,14 @@ class Worker(QObject):
                     buffer += datastring
 
                     # Check if the buffer ends with CR LF
-                    if buffer.endswith('\r\n'):
+                    if datastring.endswith('\n'):
                         # Extract the line and reset the buffer
                         line = buffer  # .rstrip('\r\n')
                         # print('line:', line)
                         return line
             # Small delay to prevent busy-waiting
-            time.sleep(0.1)
+            else:
+                time.sleep(0.1)
             # print('sleep 0.01')
 
     def work(self):
@@ -446,6 +449,21 @@ class MainWindow(QMainWindow):
             ui_path = self.resource_path('main_window.ui')
             uic.loadUi(ui_path, self)
             self.show()  # Show the GUI
+
+        # Make the settings label clickable to change device type
+        try:
+            if hasattr(self, 'label_com_settings'):
+                # show current device type
+                self.label_com_settings.setText("Settings " + str(self.device_type.value) + ":")
+                self.label_com_settings.installEventFilter(self)
+                try:
+                    # make it look clickable
+                    self.label_com_settings.setCursor(Qt.CursorShape.PointingHandCursor)
+                    self.label_com_settings.setToolTip("Click to change device type")
+                except Exception:
+                    pass
+        except Exception:
+            logging.exception("Failed to prepare label_com_settings for device selection")
 
         # Plot configuration: sliding window in seconds (0 = unlimited)
         self.plot_window_seconds = 1000  # show last 1000 seconds; set to 0 to disable
@@ -894,7 +912,7 @@ class MainWindow(QMainWindow):
                         self.label_time.setText("Time: " + formatted_time)
                         timeinterval = ml.get_time_interval("frequency")
                         self.data_textEdit.append(
-                            "{}".format(str(round(timestamp, 1)).zfill(7) + ", " + serial_data.strip()))
+                            "{}".format(str(round(timestamp, 2)).zfill(8) + ", " + serial_data.strip()))
                         self.label_freq.setText("Freq: " + fa5.group_spaces(frequency).zfill(19) + ' Hz')
                         self.label_freq_avg.setText(
                             "Freq Avg: " + fa5.group_spaces(round(ml.average_value("frequency"), 7)) + ' Hz')
@@ -917,7 +935,7 @@ class MainWindow(QMainWindow):
                             "Pk-Pk: " + fa5.group_spaces(1000 * ml.peak_to_peak("frequency")) + ' mHz')
                         self.label_freq_power.setText("Power: " + str(ml.latest_value("power")[0]) + ' dBm')
                         self.label_freq_ppm.setText(
-                            "Rel. Offset: " + fa5.group_spaces(round(ppm, 7)) + ' ppm')
+                            "Rel. Offset: " + fa5.group_spaces(round(ppm, 9)) + ' ppm')
                         self.update_gui_settings(ml.latest_settings)
                     except Exception as e:
                         print("error on data:", serial_data)
@@ -996,6 +1014,64 @@ class MainWindow(QMainWindow):
         else:
             self.clipboardcopy_buton.setStyleSheet("background-color: red; color: white;")
 
+    def eventFilter(self, source, event):
+        """ Install event filter on label_com_settings so user can click it to change Device_Type """
+        # Only interested in mouse click events
+        # Show the prompt on double-click of the label
+        if event.type() == QEvent.Type.MouseButtonPress:
+            try:
+                # Check if the clicked widget is the label_com_settings
+                if source == self.label_com_settings:
+                    # Open device type selection dialog
+                    self.prompt_device_type_selection()
+            except Exception:
+                logging.exception("Error in eventFilter")
+        return super(MainWindow, self).eventFilter(source, event)
+
+    def prompt_device_type_selection(self):
+        """ Prompt the user to select or confirm the device type """
+        # Present a simple dropdown to choose the device type and persist selection
+        try:
+            options = [t.value for t in Device_Type]
+            try:
+                current_index = options.index(self.device_type.value)
+            except Exception:
+                current_index = 0
+
+            item, ok = QInputDialog.getItem(self, "Select Device Type",
+                                            "Device type:", options, current_index, False)
+            if not ok or not item:
+                return
+
+            # Map chosen item back to Device_Type enum (Device_Type(item) uses the value)
+            try:
+                self.device_type = Device_Type(item)
+            except Exception:
+                # If mapping fails, leave unchanged
+                logging.exception("Failed to map selected device type to enum")
+                return
+
+            # Update label
+            if hasattr(self, 'label_com_settings'):
+                self.label_com_settings.setText("Settings " + str(self.device_type.value) + ":")
+
+            # Persist selection
+            self._user_settings['device_type'] = self.device_type.value
+            try:
+                save_user_settings(self._user_settings)
+            except Exception:
+                logging.exception("Failed to save user settings after device type selection")
+
+            # Mark that we need to re-fetch device settings when next connected
+            self.get_FA_settings = True
+
+            # Inform the user
+            # try:
+            #     self.print_message_on_screen("Device type set to " + self.device_type.value)
+            # except Exception:
+            #     pass
+        except Exception:
+            logging.exception("Error while prompting for device type")
 
 def start_ui_design():
     """ Start the UI Design """
