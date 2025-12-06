@@ -117,8 +117,10 @@ def group_spaces(decimal_number: Decimal) -> str:
         decimal_str = str(decimal_number)
 
         # Split the number into integer and fractional parts
-        integer_part, fractional_part = decimal_str.split('.')
-
+        if '.' in decimal_str:
+            integer_part, fractional_part = decimal_str.split('.', 1)
+        else:
+            integer_part, fractional_part = decimal_str, '0'
 
         # Function to group the digits into chunks of three from the left
         def chunk_string(s, size):

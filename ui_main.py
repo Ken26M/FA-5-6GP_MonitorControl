@@ -207,6 +207,7 @@ class Worker(QObject):
                         line = buffer  # .rstrip('\r\n')
                         # print('line:', line)
                         return line
+
             # Small delay to prevent busy-waiting
             else:
                 time.sleep(0.1)
