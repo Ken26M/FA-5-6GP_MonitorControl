@@ -184,51 +184,87 @@ class Worker(QObject):
 
     def __init__(self):
         super(Worker, self).__init__()
+        # working flag can be cleared by MainWindow.stop_loop to stop the worker
         self.working = True
+        # persistent buffer to assemble partial lines between reads
+        self._buffer = ""
 
     def read_line(self):
-        # Read data from the serial port
-        # 1 line of measure data is not send in 1 go, if the gate time is 10 sec 2 text parts will be 10 sec apart
-        # This makes sure we only start processing the received data when the text line is complete
-        buffer = ""
-        while True:
-            if SERIAL_CON.in_waiting > 0:
-                # Read one byte at a time
-                byte = SERIAL_CON.readline()
-                datastring = byte.decode('utf-8', errors='ignore')
-                # print('byte:', byte)
-                if datastring:
-                    # Append the byte to the buffer
-                    buffer += datastring
+        """Read available bytes without blocking indefinitely and assemble lines.
 
-                    # Check if the buffer ends with CR LF
-                    if datastring.endswith('\n'):
-                        # Extract the line and reset the buffer
-                        line = buffer  # .rstrip('\r\n')
-                        # print('line:', line)
-                        return line
-
-            # Small delay to prevent busy-waiting
-            else:
-                time.sleep(0.1)
-            # print('sleep 0.01')
+        Returns a complete line including trailing newline, or an empty string
+        if the worker was asked to stop.
+        """
+        while self.working:
+            try:
+                in_waiting = getattr(SERIAL_CON, 'in_waiting', 0)
+                if in_waiting:
+                    try:
+                        data = SERIAL_CON.read(in_waiting or 1)
+                    except Exception:
+                        # Fallback if .read() misbehaves for this transport
+                        try:
+                            data = SERIAL_CON.readline()
+                        except Exception:
+                            data = b''
+                    if not data:
+                        time.sleep(0.02)
+                        continue
+                    try:
+                        datastring = data.decode('utf-8', errors='ignore')
+                    except Exception:
+                        datastring = ''
+                    if datastring:
+                        self._buffer += datastring
+                        if '\n' in self._buffer:
+                            line, sep, remainder = self._buffer.partition('\n')
+                            self._buffer = remainder
+                            return line + sep
+                else:
+                    # No data available; sleep briefly so we stay responsive to stop requests
+                    time.sleep(0.02)
+            except SerialException:
+                # let caller handle serial-related exceptions
+                raise
+            except Exception:
+                # On transient errors, back off a little and continue
+                time.sleep(0.05)
+        # If asked to stop, return empty so work() can exit gracefully
+        return ""
 
     def work(self):
         """ Read data from serial port """
-        while self.working:
+        try:
+            while self.working:
+                try:
+                    line = self.read_line()  # get full text line from FA-5 or "" when stopping
+                    if not self.working:
+                        break
+                    if not line:
+                        # no complete line available this iteration
+                        continue
+                    is_data_stream = ml.add_string(line)  # add measurement to log and update settings if applicable
+                    metadata = {"datastream": is_data_stream}
+                    self.serial_data.emit(line, metadata)
+                except SerialException as e:
+                    # Emit error and stop
+                    try:
+                        self.serial_data.emit("ERROR_SERIAL_EXCEPTION", {"error": str(e)})
+                    except Exception:
+                        pass
+                    self.working = False
+                except Exception:
+                    traceback.print_exc()
+                    time.sleep(0.05)
+        finally:
             try:
-                line = self.read_line()  # get full text line from FA-5
-                is_data_stream = ml.add_string(line)  # add measurement to log and update settings if applicable
-                metadata = {"datastream": is_data_stream}  # example extra parameter
-                self.serial_data.emit(line, metadata)
-            except SerialException as e:
-                print(e)
-                # Emit last error message before die!
-                self.serial_data.emit("ERROR_SERIAL_EXCEPTION", {"error": str(e)})
-                self.working = False
-        # Only emit finished when the worker actually stops (after loop exits)
-        self.finished.emit()
-        SERIAL_CON.close()
+                SERIAL_CON.close()
+            except Exception:
+                pass
+            try:
+                self.finished.emit()
+            except Exception:
+                pass
 
 
 class MainWindow(QMainWindow):
@@ -781,6 +817,7 @@ class MainWindow(QMainWindow):
         self.start_time = time.time()
         # Clear any previous custom stylesheet so the widget uses the platform default look
         self.port_comboBox.setStyleSheet("")
+        # Enable the Stop (End) button so the user can cancel while we try to connect
         self.end_button.setEnabled(True)
 
         # If the serial port is not selected, print a message
@@ -794,13 +831,52 @@ class MainWindow(QMainWindow):
             # Clear any custom stylesheet to restore the widget's default color
             self.port_comboBox.setStyleSheet("")
             self.establish_serial_communication()
+            # If the serial port is open, reflect a connected UI state immediately.
+            try:
+                # If establish_serial_communication() didn't raise, treat that as success and update UI to connected.
+                try:
+                    global is_serial_port_established
+                    is_serial_port_established = True
+                    # Disable start/connect and port selectors so user cannot re-connect
+                    if hasattr(self, 'start_button'):
+                        try:
+                            self.start_button.setStyleSheet('background-color: lightgray; color: gray;')
+                        except Exception:
+                            pass
+                        self.start_button.setEnabled(False)
+                    if hasattr(self, 'port_comboBox'):
+                        try:
+                            self.port_comboBox.setStyleSheet('QComboBox:disabled { background-color: lightgray; color: gray; }')
+                        except Exception:
+                            pass
+                        self.port_comboBox.setEnabled(False)
+                    if hasattr(self, 'baudrate_comboBox'):
+                        try:
+                            self.baudrate_comboBox.setStyleSheet('QComboBox:disabled { background-color: lightgray; color: gray; }')
+                        except Exception:
+                            pass
+                        self.baudrate_comboBox.setEnabled(False)
+                    if hasattr(self, 'status_label'):
+                        self.status_label.setText("CONNECTED!")
+                        try:
+                            self.status_label.setStyleSheet('color: green')
+                        except Exception:
+                            pass
+                except Exception:
+                    logging.exception("Failed to set initial UI state after opening serial port")
+            except Exception:
+                logging.exception("Failed to set initial UI state after opening serial port")
         except SerialException:
             self.print_message_on_screen(
                 "Exception occured while trying establish serial communication!")
             return
 
-        global is_serial_port_established
-        is_serial_port_established = True
+        # Ensure the global flag is set (if it wasn't set above when port opened)
+        try:
+            if not is_serial_port_established and getattr(SERIAL_CON, 'is_open', False):
+                is_serial_port_established = True
+        except Exception:
+            pass
         self.get_FA_settings = True
 
         try:
@@ -820,6 +896,35 @@ class MainWindow(QMainWindow):
             # have thread mark itself for deletion
             self.thread.finished.connect(self.thread.deleteLater)
             self.thread.start()
+            # Ensure UI shows connected state immediately if port was established
+            try:
+                if is_serial_port_established:
+                    if hasattr(self, 'start_button'):
+                        try:
+                            self.start_button.setStyleSheet('background-color: lightgray; color: gray;')
+                        except Exception:
+                            pass
+                        self.start_button.setEnabled(False)
+                    if hasattr(self, 'port_comboBox'):
+                        try:
+                            self.port_comboBox.setStyleSheet('QComboBox:disabled { background-color: lightgray; color: gray; }')
+                        except Exception:
+                            pass
+                        self.port_comboBox.setEnabled(False)
+                    if hasattr(self, 'baudrate_comboBox'):
+                        try:
+                            self.baudrate_comboBox.setStyleSheet('QComboBox:disabled { background-color: lightgray; color: gray; }')
+                        except Exception:
+                            pass
+                        self.baudrate_comboBox.setEnabled(False)
+                    if hasattr(self, 'status_label'):
+                        try:
+                            self.status_label.setText('CONNECTED!')
+                            self.status_label.setStyleSheet('color: green')
+                        except Exception:
+                            pass
+            except Exception:
+                logging.exception('Failed to set connected UI state after thread start')
         except RuntimeError:
             self.print_message_on_screen("Exception in Worker Thread!")
 
@@ -991,10 +1096,35 @@ class MainWindow(QMainWindow):
         """ Stop the process """
         global is_serial_port_established
         is_serial_port_established = False
-        self.baudrate_comboBox.setEnabled(True)
-        self.port_comboBox.setEnabled(True)
+        # Restore enabled state and clear any temporary disabled styles so widgets show normally again
+        try:
+            if hasattr(self, 'baudrate_comboBox'):
+                try:
+                    self.baudrate_comboBox.setStyleSheet("")
+                except Exception:
+                    pass
+                self.baudrate_comboBox.setEnabled(True)
+        except Exception:
+            pass
+        try:
+            if hasattr(self, 'port_comboBox'):
+                try:
+                    self.port_comboBox.setStyleSheet("")
+                except Exception:
+                    pass
+                self.port_comboBox.setEnabled(True)
+        except Exception:
+            pass
         self.end_button.setEnabled(False)
-        self.start_button.setEnabled(True)
+        try:
+            if hasattr(self, 'start_button'):
+                try:
+                    self.start_button.setStyleSheet("")
+                except Exception:
+                    pass
+                self.start_button.setEnabled(True)
+        except Exception:
+            pass
         self.status_label.setText("Disconnected")
         self.status_label.setStyleSheet('color: red')
 
@@ -1017,14 +1147,15 @@ class MainWindow(QMainWindow):
 
     def eventFilter(self, source, event):
         """ Install event filter on label_com_settings so user can click it to change Device_Type """
-        # Only interested in mouse click events
-        # Show the prompt on double-click of the label
-        if event.type() == QEvent.Type.MouseButtonPress:
+        # Only interested in mouse double-click events on the label_com_settings
+        if event.type() == QEvent.Type.MouseButtonDblClick:
             try:
                 # Check if the clicked widget is the label_com_settings
-                if source == self.label_com_settings:
+                if hasattr(self, 'label_com_settings') and source == self.label_com_settings:
                     # Open device type selection dialog
                     self.prompt_device_type_selection()
+                    # consume the event
+                    return True
             except Exception:
                 logging.exception("Error in eventFilter")
         return super(MainWindow, self).eventFilter(source, event)
