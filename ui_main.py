@@ -2,6 +2,7 @@
 AFCOM - Serial Communication GUI Program
 Cannot be used directly, it is a part of main.py
 """
+
 """
 Customized for FA-5 application by Ken26M 2025.11
 github.com/Ken26M/FA-5-6GP_MonitorControl
@@ -1052,7 +1053,32 @@ class MainWindow(QMainWindow):
                     self.data_textEdit_all.append("{}".format(serial_data.strip()))
 
     def send_to_command_buffer(self, command):
+        """Queue a command for later sending, or send immediately for TinyGTC devices."""
         global waiting_for_command
+        # If device type requires immediate sends (TinyGTC), forward directly to send_command()
+        try:
+              if self.device_type == Device_Type.TinyGTC:
+                # Convert command to string if needed and send immediately
+                try:
+                    if not isinstance(command, str):
+                        # Accept enum-like objects with .value, or other objects
+                        command_to_send = str(getattr(command, 'value', command))
+                    else:
+                        command_to_send = command
+                except Exception:
+                    command_to_send = str(command)
+                # Use send_command to perform the actual write (it checks is_serial_port_established)
+                try:
+                    command_to_send = command_to_send + '\r\n'
+                    self.send_command(command_to_send)
+                except Exception:
+                    logging.exception("Failed to send TinyGTC command immediately; falling back to queue")
+                    command_queue.append(command_to_send)
+                return
+        except Exception:
+            logging.exception("Error checking device type in send_to_command_buffer; defaulting to queue")
+
+        # Default behavior: append to FIFO command queue
         command_queue.append(command)
         # if waiting_for_command:  # if no previous command is waiting for answer then send command immediately
         #     self.send_command()
@@ -1080,7 +1106,7 @@ class MainWindow(QMainWindow):
                 time.sleep(0.2)
             # print(time.strftime("%Hh%Mm%Ss", time.localtime())," ",time.time(), 'commands', command_queue)
             SERIAL_CON.write(command.encode())
-            self.data_textEdit_all.append("{}".format("** Command Send: " + command))
+            self.data_textEdit_all.append("{}".format("** Command Send: " + command.rstrip('\r\n')))
         else:
             self.print_message_on_screen(
                 "Serial Port is not established yet! Please establish the serial port first!")
@@ -1148,7 +1174,7 @@ class MainWindow(QMainWindow):
     def eventFilter(self, source, event):
         """ Install event filter on label_com_settings so user can click it to change Device_Type """
         # Only interested in mouse double-click events on the label_com_settings
-        if event.type() == QEvent.Type.MouseButtonDblClick:
+        if event.type() == QEvent.Type.MouseButtonPress:
             try:
                 # Check if the clicked widget is the label_com_settings
                 if hasattr(self, 'label_com_settings') and source == self.label_com_settings:
@@ -1211,3 +1237,4 @@ def start_ui_design():
     window_object = MainWindow()  # Create an instance of our class
 
     app.exec()  # Start the application
+
