@@ -149,27 +149,17 @@ receive_time_of_freq = time.time()
 waiting_for_command = True
 command_queue = []
 
-def parse_interface_from_hwid(hwid: str | None, location: str | None) -> int | None:
+def parse_interface_from_hwid(location: str | None) -> int | None:
     """
     for Windows (standard way does not work):
     Try to extract a USB interface index (0,1,2...) from hwid or location strings.
     """
 
-    # If a location string is available, just use the last number from it (or 0 if present but no number)
-    if location:
-        nums_loc = re.findall(r"(\d+)", location)
-        if nums_loc:
-            try:
-                return int(nums_loc[-1])
-            except Exception:
-                return 0
-        # location was provided but contained no numbers -> return 0 per user's request
-        return 0
+    # Prefer the provided location string; return the last numeric token or 0
+    nums = re.findall(r"\d+", location or "")
+    return int(nums[-1]) if nums else 0
 
-    if not hwid:
-        return None
-
-def get_serial_port():
+def get_serial_port(device_type=Device_Type.FA_5):
     """ Lists serial port names
         :raises EnvironmentError:
             On unsupported or unknown platforms
@@ -189,11 +179,15 @@ def get_serial_port():
         try:
             s = Serial(port.device)
             s.close()
-            hwid = getattr(port, 'hwid', '')
             location = getattr(port, 'location', '')
-            interaceid = parse_interface_from_hwid(hwid,location)
-            if (port.vid == 1027 and port.pid == 24577) or (port.vid == 1155 and port.pid == 22337 and interaceid==4):  # Filter out other com devices
-                result.insert(0,port.device)
+            interface_id = parse_interface_from_hwid(location)
+            if device_type==device_type.TinyGTC:
+                if port.vid == 1155 and port.pid == 22337 and interface_id==4:  # Filter out other com devices
+                    result.insert(0,port.device)
+            else:
+                if port.vid == 1027 and port.pid == 24577:
+                    result.insert(0, port.device)
+
         except SerialException:
             pass
     return result
@@ -528,7 +522,7 @@ class MainWindow(QMainWindow):
         # Plot configuration: sliding window in seconds (0 = unlimited)
         self.plot_window_seconds = 1000  # show last 1000 seconds; set to 0 to disable
 
-        ports = get_serial_port()
+        ports = get_serial_port(self.device_type)
         self.thread = None
         self.worker = None
         self.start_time = 0
@@ -699,7 +693,7 @@ class MainWindow(QMainWindow):
 
     def refresh_port(self):
         """ Refresh the serial port list """
-        ports = get_serial_port()
+        ports = get_serial_port(self.device_type)
         self.port_comboBox.clear()
         self.port_comboBox.addItems(ports)
 
