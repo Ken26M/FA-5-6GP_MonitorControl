@@ -149,16 +149,16 @@ def channel_to_text(channel_char):
 
 
 
-def extract_all_big_float_pairs(s: str, min_integer_digits: int = 7):
-    """Find all occurrences of a big decimal number (integer part at least min_integer_digits)
+def extract_all_big_float_pairs(s: str, min_digits: int = 7):
+    """Find all occurrences of a big decimal number (total digits before+after decimal at least min_integer_digits)
     optionally followed by a comma and a second number. Return a list of dicts with metadata.
 
     Each dict contains:
-      - text1, decimal1, start1, end1, int_digits
+      - text1, decimal1, start1, end1, int_digits (now total_digits)
       - text2, decimal2, start2, end2  (may be None if no second value was found)
 
     The function first looks for explicit "number,number" pairs and returns those
-    that match the integer-digit threshold. If none are found it will fall back
+    that match the total-digit threshold. If none are found it will fall back
     to returning the first standalone big decimal it finds.
     """
     results = []
@@ -170,9 +170,13 @@ def extract_all_big_float_pairs(s: str, min_integer_digits: int = 7):
     for m in pair_pattern.finditer(s):
         t1 = m.group(1)
         t2 = m.group(2)
-        int_part = t1.split('.', 1)[0]
-        int_digits = len(int_part)
-        if int_digits >= int(min_integer_digits):
+        # Split integer and fractional parts and compute total digits
+        if '.' in t1:
+            integer_part, fractional_part = t1.split('.', 1)
+        else:
+            integer_part, fractional_part = t1, ''
+        total_digits = len(integer_part) + len(fractional_part)
+        if total_digits >= int(min_digits):
             try:
                 d1 = Decimal(t1)
             except Exception:
@@ -186,7 +190,7 @@ def extract_all_big_float_pairs(s: str, min_integer_digits: int = 7):
                 'decimal1': d1,
                 'start1': m.start(1),
                 'end1': m.end(1),
-                'int_digits': int_digits,
+                'int_digits': total_digits,
                 'text2': t2,
                 'decimal2': d2,
                 'start2': m.start(2),
@@ -200,9 +204,12 @@ def extract_all_big_float_pairs(s: str, min_integer_digits: int = 7):
     single_pattern = re.compile(r"(\d+\.\d+)")
     for m in single_pattern.finditer(s):
         t1 = m.group(1)
-        int_part = t1.split('.', 1)[0]
-        int_digits = len(int_part)
-        if int_digits >= int(min_integer_digits):
+        if '.' in t1:
+            integer_part, fractional_part = t1.split('.', 1)
+        else:
+            integer_part, fractional_part = t1, ''
+        total_digits = len(integer_part) + len(fractional_part)
+        if total_digits >= int(min_digits):
             try:
                 d1 = Decimal(t1)
             except Exception:
@@ -212,7 +219,7 @@ def extract_all_big_float_pairs(s: str, min_integer_digits: int = 7):
                 'decimal1': d1,
                 'start1': m.start(1),
                 'end1': m.end(1),
-                'int_digits': int_digits,
+                'int_digits': total_digits,
                 'text2': None,
                 'decimal2': None,
                 'start2': None,
@@ -263,7 +270,7 @@ def preprocess_string(string):
         else:
             category = Category.UNKNOWN  # This will not be added to frequencies or power
     else:
-        numbers_found = extract_all_big_float_pairs(preprocessed_string, min_integer_digits=7)
+        numbers_found = extract_all_big_float_pairs(preprocessed_string, min_digits=7)
         if numbers_found:
             is_data_stream = True
             # Each match may represent a separate measurement; append frequency and optional power

@@ -424,7 +424,7 @@ class Ui_main_window(object):
         self.actionHelp.setObjectName("actionHelp")
 
         self.retranslateUi(main_window)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
     def retranslateUi(self, main_window):
@@ -998,9 +998,9 @@ class Ui_main_window(object):
 "<p style=\" margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The AFCOM (aka Serial communication GUI program) tool is a software application that allows users to send and receive data via the serial port (COM port) of their computer. The tool can be used for various purposes, such as testing, debugging, or communicating with other devices that use the serial protocol. </p></body></html>"))
         self.label.setText(_translate("main_window", "Feel free to ask any questions or bug report on: https://github.com/mcagriaksoy/Serial-Communication-GUI-Program"))
         self.label_3.setText(_translate("main_window", "Version 2024.04 Custom"))
-        self.textEdit_deviceinfo.setMarkdown(_translate("main_window", "This FA-5-USB GUI application v1.01 is a very custom version of a genenral\n"
+        self.textEdit_deviceinfo.setMarkdown(_translate("main_window", "This FA-5-USB GUI application v1.02 is a very custom version of a genenral\n"
 "serial communication tool. You can also log long time frequency measurments but\n"
-"in that case it is probably a better idea to use Timelab.   \n"
+"in that case it is probably a better idea to use Timelab.    \n"
 "<https://github.com/Ken26M/FA-5-6GP_MonitorControl>\n"
 "\n"
 ""))
@@ -1011,7 +1011,7 @@ class Ui_main_window(object):
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:\'Segoe UI\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This FA-5-USB GUI application v1.01 is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.   <a href=\"https://github.com/Ken26M/FA-5-6GP_MonitorControl\"><span style=\" text-decoration: underline; color:#005ba0;\">https://github.com/Ken26M/FA-5-6GP_MonitorControl</span></a></p></body></html>"))
+"<p style=\" margin-top:6px; margin-bottom:6px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This FA-5-USB GUI application v1.02 is a very custom version of a genenral serial communication tool. You can also log long time frequency measurments but in that case it is probably a better idea to use Timelab.    <a href=\"https://github.com/Ken26M/FA-5-6GP_MonitorControl\"><span style=\" color:#005ba0;\">https://github.com/Ken26M/FA-5-6GP_MonitorControl</span></a></p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("main_window", "About"))
         self.actionAna_Ekran.setText(_translate("main_window", "Ana Ekran"))
         self.actionHelp.setText(_translate("main_window", "Help"))

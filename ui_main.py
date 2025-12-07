@@ -2,6 +2,7 @@
 AFCOM - Serial Communication GUI Program
 Cannot be used directly, it is a part of main.py
 """
+import re
 
 """
 Customized for FA-5 application by Ken26M 2025.11
@@ -148,10 +149,28 @@ receive_time_of_freq = time.time()
 waiting_for_command = True
 command_queue = []
 
+def parse_interface_from_hwid(hwid: str | None, location: str | None) -> int | None:
+    """
+    for Windows (standard way does not work):
+    Try to extract a USB interface index (0,1,2...) from hwid or location strings.
+    """
+
+    # If a location string is available, just use the last number from it (or 0 if present but no number)
+    if location:
+        nums_loc = re.findall(r"(\d+)", location)
+        if nums_loc:
+            try:
+                return int(nums_loc[-1])
+            except Exception:
+                return 0
+        # location was provided but contained no numbers -> return 0 per user's request
+        return 0
+
+    if not hwid:
+        return None
 
 def get_serial_port():
     """ Lists serial port names
-
         :raises EnvironmentError:
             On unsupported or unknown platforms
         :returns:
@@ -170,7 +189,10 @@ def get_serial_port():
         try:
             s = Serial(port.device)
             s.close()
-            if (port.vid == 1027 and port.pid == 24577) or (port.vid == 1155 and port.pid == 22337):  # Filter out other com devices
+            hwid = getattr(port, 'hwid', '')
+            location = getattr(port, 'location', '')
+            interaceid = parse_interface_from_hwid(hwid,location)
+            if (port.vid == 1027 and port.pid == 24577) or (port.vid == 1155 and port.pid == 22337 and interaceid==4):  # Filter out other com devices
                 result.insert(0,port.device)
         except SerialException:
             pass
